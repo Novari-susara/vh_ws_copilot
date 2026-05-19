@@ -6,9 +6,12 @@
 
 set -euo pipefail
 
+# Portable Python: prefer python3, fall back to python (Windows Git Bash compatibility)
+PYTHON=$(python3 -c "import sys" >/dev/null 2>&1 && echo "python3" || echo "python")
+
 INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
-TOOL_INPUT=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input','')))" 2>/dev/null || echo "{}")
+TOOL_NAME=$(echo "$INPUT" | "$PYTHON" -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
+TOOL_INPUT=$(echo "$INPUT" | "$PYTHON" -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input','')))" 2>/dev/null || echo "{}")
 
 # Only run for file edit tools
 if [[ "$TOOL_NAME" != *"edit"* ]] && [[ "$TOOL_NAME" != *"write"* ]] && [[ "$TOOL_NAME" != *"create"* ]]; then
@@ -16,7 +19,7 @@ if [[ "$TOOL_NAME" != *"edit"* ]] && [[ "$TOOL_NAME" != *"write"* ]] && [[ "$TOO
 fi
 
 # Extract file path from tool input
-FILE_PATH=$(echo "$TOOL_INPUT" | python3 -c "
+FILE_PATH=$(echo "$TOOL_INPUT" | "$PYTHON" -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('path', d.get('file_path', d.get('filePath', ''))))
@@ -37,10 +40,7 @@ if command -v ruff &>/dev/null; then
         MSG="$MSG\n⚠️ Lint issues (auto-fixed where possible):\n$LINT_OUTPUT"
     fi
     
-    python3 -c "
-import json, sys
-msg = sys.argv[1]
-print(json.dumps({
+    "$PYTHON" -c "
     'hookSpecificOutput': {
         'hookEventName': 'PostToolUse',
         'additionalContext': msg
@@ -49,7 +49,7 @@ print(json.dumps({
 " "$MSG"
 else
     # ruff not installed — suggest it
-    python3 -c "
+    "$PYTHON" -c "
 print('{\"systemMessage\": \"💡 Tip: Install ruff for auto-formatting: pip install ruff\"}')
 "
 fi

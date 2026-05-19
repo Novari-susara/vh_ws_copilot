@@ -8,10 +8,13 @@
 
 set -euo pipefail
 
+# Portable Python: prefer python3, fall back to python (Windows Git Bash compatibility)
+PYTHON=$(python3 -c "import sys" >/dev/null 2>&1 && echo "python3" || echo "python")
+
 INPUT=$(cat)
 
 # Check if we're already in a stop-hook loop (prevent infinite looping)
-HOOK_ACTIVE=$(echo "$INPUT" | python3 -c "
+HOOK_ACTIVE=$(echo "$INPUT" | "$PYTHON" -c "
 import sys, json
 d = json.load(sys.stdin)
 print(d.get('stop_hook_active', False))
@@ -36,7 +39,7 @@ if command -v pytest &>/dev/null; then
     if [ $EXIT_CODE -ne 0 ]; then
         # Tests failed — block the agent from stopping
         FAILURE_SUMMARY=$(echo "$TEST_OUTPUT" | tail -20)
-        python3 -c "
+        "$PYTHON" -c "
 import json, sys
 summary = sys.argv[1]
 print(json.dumps({

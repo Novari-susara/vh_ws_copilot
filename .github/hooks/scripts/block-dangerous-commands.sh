@@ -10,10 +10,13 @@
 
 set -euo pipefail
 
+# Portable Python: prefer python3, fall back to python (Windows Git Bash compatibility)
+PYTHON=$(python3 -c "import sys" >/dev/null 2>&1 && echo "python3" || echo "python")
+
 # Read stdin JSON input
 INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
-TOOL_INPUT=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input','')))" 2>/dev/null || echo "{}")
+TOOL_NAME=$(echo "$INPUT" | "$PYTHON" -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
+TOOL_INPUT=$(echo "$INPUT" | "$PYTHON" -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input','')))" 2>/dev/null || echo "{}")
 
 # Only check terminal/shell tool calls (covers run_in_terminal, execution_subagent, bash, shell variants)
 if [[ "$TOOL_NAME" != *"terminal"* ]] && [[ "$TOOL_NAME" != *"shell"* ]] && [[ "$TOOL_NAME" != *"bash"* ]] && [[ "$TOOL_NAME" != *"execution"* ]] && [[ "$TOOL_NAME" != *"run_"* ]]; then
@@ -21,7 +24,7 @@ if [[ "$TOOL_NAME" != *"terminal"* ]] && [[ "$TOOL_NAME" != *"shell"* ]] && [[ "
 fi
 
 # Extract the command string from tool input
-COMMAND=$(echo "$TOOL_INPUT" | python3 -c "
+COMMAND=$(echo "$TOOL_INPUT" | "$PYTHON" -c "
 import sys, json
 d = json.load(sys.stdin)
 # Handle both 'command' and 'cmd' keys
