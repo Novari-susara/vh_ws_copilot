@@ -1,7 +1,7 @@
 """Authentication service — JWT token generation and validation."""
 
 from typing import Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 import jwt
 import os
@@ -25,8 +25,8 @@ class AuthService:
 
         payload = {
             "sub": email,
-            "exp": datetime.utcnow() + timedelta(hours=TOKEN_EXPIRE_HOURS),
-            "iat": datetime.utcnow(),
+            "exp": datetime.now(timezone.utc) + timedelta(hours=TOKEN_EXPIRE_HOURS),
+            "iat": datetime.now(timezone.utc),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
         logger.info("Login successful for %s", email)

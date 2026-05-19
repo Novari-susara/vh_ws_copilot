@@ -14,9 +14,15 @@ def get_user_service() -> UserService:
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user_profile(current_user: dict = Depends(get_current_user)):
+async def get_current_user_profile(
+    current_user: dict = Depends(get_current_user),
+    service: UserService = Depends(get_user_service),
+):
     """Get the current authenticated user's profile."""
-    return current_user
+    user = await service.get_user_by_email(current_user["email"])
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 
 @router.get("/", response_model=List[UserResponse])

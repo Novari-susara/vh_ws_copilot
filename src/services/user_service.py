@@ -1,7 +1,7 @@
 """User management service."""
 
 from typing import List, Optional, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 import logging
 
@@ -36,7 +36,7 @@ class UserService:
             "email": user.email,
             "full_name": user.full_name,
             "is_active": user.is_active,
-            "created_at": datetime.utcnow(),
+            "created_at": datetime.now(timezone.utc),
             # NOTE: In production, hash the password! Never store plaintext.
             "_password_hash": f"hashed_{user.password}",
         }

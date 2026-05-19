@@ -4,7 +4,7 @@ Handles all task-related operations with in-memory storage for demo purposes.
 """
 
 from typing import List, Optional, Dict
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 import logging
 
@@ -42,7 +42,7 @@ class TaskService:
     async def create_task(self, task: TaskCreate, creator_id: str) -> TaskResponse:
         """Create a new task."""
         task_id = str(uuid.uuid4())
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         task_dict = {
             "id": task_id,
             "creator_id": creator_id,
@@ -67,7 +67,7 @@ class TaskService:
 
         update_data = update.model_dump(exclude_unset=True)
         task.update(update_data)
-        task["updated_at"] = datetime.utcnow()
+        task["updated_at"] = datetime.now(timezone.utc)
         _tasks[task_id] = task
         logger.info("Task updated: %s", task_id)
         return TaskResponse(**task)
@@ -86,5 +86,5 @@ class TaskService:
         if not task:
             return None
         task["assignee_id"] = user_id
-        task["updated_at"] = datetime.utcnow()
+        task["updated_at"] = datetime.now(timezone.utc)
         return TaskResponse(**task)
