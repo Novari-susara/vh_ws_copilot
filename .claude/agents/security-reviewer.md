@@ -1,5 +1,5 @@
 ---
-name: Security Reviewer
+name: Security Reviewer new
 description: Reviews Python code for OWASP Top 10 vulnerabilities, injection risks, auth issues, and secrets exposure. Read-only agent.
 tools: Read, Grep, Glob, WebSearch
 disallowedTools: Write, Edit, Bash, MultiEdit

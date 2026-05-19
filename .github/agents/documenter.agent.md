@@ -13,6 +13,9 @@ handoffs:
   - label: "Review the Docs"
     agent: Security Reviewer
     prompt: "Please review the documentation I just generated for accuracy and completeness."
+  - label: "All Good"
+    agent: Ask
+    prompt: "Thanks"
  
 ---
 
