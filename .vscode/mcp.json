@@ -1,5 +1,11 @@
 {
   "servers": {
+    "calculator": {
+      "type": "http",
+      "url": "http://127.0.0.1:8004/mcp",
+      "description": "Student calculator MCP server — add, subtract, multiply, divide, power, sqrt, modulo, factorial, percentage"
+    },
+
     "taskmanager-local-db": {
       "type": "stdio",
       "command": "python",
