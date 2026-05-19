@@ -1,0 +1,22 @@
+# Python FastAPI Project Instructions
+
+- Use Python 3.11+ syntax (match/case, type hints, etc.).
+- All functions and methods must have type annotations.
+- Use async/await for all I/O and service/database calls.
+- Use snake_case for variables, functions, and file names.
+- Use PascalCase for classes and Pydantic models.
+- Use UPPER_SNAKE_CASE for constants and environment variables.
+- Never use print(); use logging.getLogger(__name__).
+- Maximum line length: 100 characters.
+- Imports: stdlib → third-party → local, with blank lines between groups.
+- All API endpoints (except /health and /auth/login) require JWT authentication.
+- Use Depends(get_current_user) for protected routes.
+- Raise HTTPException only in the router layer, not in services.
+- Service layer returns None for not-found, raises for unexpected errors.
+- Use status.HTTP_201_CREATED for POST, 204 for DELETE.
+- Partial updates use PATCH with exclude_unset=True.
+- All user input must be validated with Pydantic models.
+- Never log or return passwords, tokens, or sensitive data.
+- Use environment variables for all secrets.
+- Docstrings required for all modules, classes, and public functions.
+- Comment the "why", not the "what".
