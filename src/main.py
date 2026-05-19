@@ -3,16 +3,17 @@ TaskManager API — Sample Python project for VS Code Copilot Demo
 A full-featured task management REST API built with FastAPI.
 """
 
-from fastapi import FastAPI, HTTPException, Depends, status
-from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
 import logging
+from contextlib import asynccontextmanager
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from src.api.auth import router as auth_router
 from src.api.tasks import router as tasks_router
 from src.api.users import router as users_router
-from src.api.auth import router as auth_router
+from src.utils.database import close_db, init_db
 from src.utils.logger import setup_logging
-from src.utils.database import init_db, close_db
 
 logger = logging.getLogger(__name__)
 

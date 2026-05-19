@@ -4,9 +4,9 @@ Run with: pytest tests/unit/test_task_service.py -v
 """
 
 import pytest
-import pytest_asyncio
+
+from src.models.schemas import TaskCreate, TaskPriority, TaskStatus, TaskUpdate
 from src.services.task_service import TaskService, _tasks
-from src.models.schemas import TaskCreate, TaskUpdate, TaskStatus, TaskPriority
 
 
 @pytest.fixture(autouse=True)

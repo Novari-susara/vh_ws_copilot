@@ -3,12 +3,18 @@ Task business logic service.
 Handles all task-related operations with in-memory storage for demo purposes.
 """
 
-from typing import List, Optional, Dict
-from datetime import datetime, timezone
-import uuid
 import logging
+import uuid
+from datetime import datetime, timezone
+from typing import Dict, List, Optional
 
-from src.models.schemas import TaskCreate, TaskUpdate, TaskResponse, TaskStatus, TaskPriority
+from src.models.schemas import (
+    TaskCreate,
+    TaskPriority,
+    TaskResponse,
+    TaskStatus,
+    TaskUpdate,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +65,9 @@ class TaskService:
         task = _tasks.get(task_id)
         return TaskResponse(**task) if task else None
 
-    async def update_task(self, task_id: str, update: TaskUpdate) -> Optional[TaskResponse]:
+    async def update_task(
+        self, task_id: str, update: TaskUpdate
+    ) -> Optional[TaskResponse]:
         """Apply partial update to a task."""
         task = _tasks.get(task_id)
         if not task:

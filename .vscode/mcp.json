@@ -2,7 +2,7 @@
   "servers": {
     "taskmanager-local-db": {
       "type": "stdio",
-      "command": "python3",
+      "command": "python",
       "args": ["mcp-servers/local-db/server.py"],
       "description": "Local MCP server providing direct access to the TaskManager in-memory database for querying and reporting",
       "env": {

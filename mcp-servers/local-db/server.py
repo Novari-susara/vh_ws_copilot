@@ -16,8 +16,8 @@ This server exposes these tools to Copilot:
 """
 
 import json
-import sys
 import logging
+import sys
 from datetime import datetime
 from typing import Any
 
@@ -91,6 +91,7 @@ logger = logging.getLogger("taskmanager-mcp")
 
 # ── MCP Tool Implementations ───────────────────────────────────────────────
 
+
 def list_tasks(
     status: str | None = None,
     priority: str | None = None,
@@ -144,7 +145,8 @@ def search_tasks(query: str) -> dict[str, Any]:
     """Full-text search across task titles and descriptions."""
     query_lower = query.lower()
     results = [
-        t for t in DEMO_TASKS
+        t
+        for t in DEMO_TASKS
         if query_lower in t["title"].lower()
         or query_lower in (t.get("description") or "").lower()
         or any(query_lower in tag.lower() for tag in t.get("tags", []))
@@ -182,9 +184,18 @@ TOOLS = {
         "inputSchema": {
             "type": "object",
             "properties": {
-                "status": {"type": "string", "enum": ["todo", "in_progress", "done", "cancelled"]},
-                "priority": {"type": "string", "enum": ["low", "medium", "high", "critical"]},
-                "assignee_id": {"type": "string", "description": "Filter by assignee user ID"},
+                "status": {
+                    "type": "string",
+                    "enum": ["todo", "in_progress", "done", "cancelled"],
+                },
+                "priority": {
+                    "type": "string",
+                    "enum": ["low", "medium", "high", "critical"],
+                },
+                "assignee_id": {
+                    "type": "string",
+                    "description": "Filter by assignee user ID",
+                },
                 "limit": {"type": "integer", "default": 20, "maximum": 100},
             },
         },
@@ -210,11 +221,19 @@ TOOLS = {
 }
 
 
-def handle_request(request: dict) -> dict:
-    """Route MCP requests to the appropriate handler."""
+def handle_request(request: dict) -> dict | None:
+    """Route MCP requests to the appropriate handler.
+
+    Returns None for notifications (no 'id'), which must not receive a response.
+    """
     method = request.get("method")
     req_id = request.get("id")
     params = request.get("params", {})
+
+    # JSON-RPC notifications have no 'id' — must not send a response
+    if req_id is None:
+        logger.debug("Received notification: %s (ignored)", method)
+        return None
 
     if method == "initialize":
         return {
@@ -232,9 +251,7 @@ def handle_request(request: dict) -> dict:
             "jsonrpc": "2.0",
             "id": req_id,
             "result": {
-                "tools": [
-                    {"name": name, **schema} for name, schema in TOOLS.items()
-                ]
+                "tools": [{"name": name, **schema} for name, schema in TOOLS.items()]
             },
         }
 
@@ -291,7 +308,8 @@ def main() -> None:
         try:
             request = json.loads(line)
             response = handle_request(request)
-            print(json.dumps(response), flush=True)
+            if response is not None:
+                print(json.dumps(response), flush=True)
         except json.JSONDecodeError as e:
             logger.error("Invalid JSON: %s", e)
             error_response = {
