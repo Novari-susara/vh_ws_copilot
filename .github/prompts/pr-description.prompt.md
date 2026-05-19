@@ -1,9 +1,9 @@
 ---
 name: pr-description
 description: "Generate a clear, structured GitHub Pull Request description from git diff"
-mode: ask
+
 tools:
-  - terminal
+  - execute
   - read
 ---
 

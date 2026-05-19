@@ -1,12 +1,11 @@
 ---
 name: new-endpoint
 description: "Scaffold a complete new FastAPI endpoint with router, service, Pydantic models, and tests"
-mode: agent
+
 tools:
   - read
-  - write
   - edit
-  - terminal
+  - execute
 ---
 
 # New FastAPI Endpoint Scaffold
