@@ -118,14 +118,10 @@ class TestListTasks:
 
     @pytest.mark.asyncio
     async def test_filter_by_status(self, service):
-        t1 = await service.create_task(
-            TaskCreate(title="Todo task"), creator_id="user-123"
-        )
+        t1 = await service.create_task(TaskCreate(title="Todo task"), creator_id="user-123")
         await service.update_task(t1.id, TaskUpdate(status=TaskStatus.DONE))
 
-        t2 = await service.create_task(
-            TaskCreate(title="In progress task"), creator_id="user-123"
-        )
+        t2 = await service.create_task(TaskCreate(title="In progress task"), creator_id="user-123")
         await service.update_task(t2.id, TaskUpdate(status=TaskStatus.IN_PROGRESS))
 
         done_tasks = await service.list_tasks(status=TaskStatus.DONE)

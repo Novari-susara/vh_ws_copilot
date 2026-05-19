@@ -1,29 +1,28 @@
 """User management service."""
 
-from typing import List, Optional, Dict
-from datetime import datetime, timezone
-import uuid
 import logging
+import uuid
+from datetime import UTC, datetime
 
 from src.models.schemas import UserCreate, UserResponse
 
 logger = logging.getLogger(__name__)
 
-_users: Dict[str, dict] = {}
-_users_by_email: Dict[str, str] = {}
+_users: dict[str, dict] = {}
+_users_by_email: dict[str, str] = {}
 
 
 class UserService:
     """Handles user CRUD operations."""
 
-    async def list_users(self) -> List[UserResponse]:
+    async def list_users(self) -> list[UserResponse]:
         return [UserResponse(**u) for u in _users.values()]
 
-    async def get_user(self, user_id: str) -> Optional[UserResponse]:
+    async def get_user(self, user_id: str) -> UserResponse | None:
         user = _users.get(user_id)
         return UserResponse(**user) if user else None
 
-    async def get_user_by_email(self, email: str) -> Optional[UserResponse]:
+    async def get_user_by_email(self, email: str) -> UserResponse | None:
         user_id = _users_by_email.get(email)
         if not user_id:
             return None
@@ -36,7 +35,7 @@ class UserService:
             "email": user.email,
             "full_name": user.full_name,
             "is_active": user.is_active,
-            "created_at": datetime.now(timezone.utc),
+            "created_at": datetime.now(UTC),
             # NOTE: In production, hash the password! Never store plaintext.
             "_password_hash": f"hashed_{user.password}",
         }

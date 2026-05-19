@@ -1,10 +1,10 @@
 """Authentication service — JWT token generation and validation."""
 
-from typing import Optional
-from datetime import datetime, timedelta, timezone
 import logging
-import jwt
 import os
+from datetime import UTC, datetime, timedelta
+
+import jwt
 
 logger = logging.getLogger(__name__)
 
@@ -16,23 +16,23 @@ TOKEN_EXPIRE_HOURS = 1
 class AuthService:
     """Handles JWT-based authentication."""
 
-    async def authenticate(self, email: str, password: str) -> Optional[str]:
+    async def authenticate(self, email: str, password: str) -> str | None:
         """Validate credentials and return JWT token."""
         # Demo: accept any email with password 'Demo1234!'
-        if password != "Demo1234!":
+        if password != "Demo1234!":  # noqa: S105  # TODO: Replace with real implementation
             logger.warning("Failed login attempt for %s", email)
             return None
 
         payload = {
             "sub": email,
-            "exp": datetime.now(timezone.utc) + timedelta(hours=TOKEN_EXPIRE_HOURS),
-            "iat": datetime.now(timezone.utc),
+            "exp": datetime.now(UTC) + timedelta(hours=TOKEN_EXPIRE_HOURS),
+            "iat": datetime.now(UTC),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
         logger.info("Login successful for %s", email)
         return token
 
-    def decode_token(self, token: str) -> Optional[dict]:
+    def decode_token(self, token: str) -> dict | None:
         """Decode and validate a JWT token."""
         try:
             return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

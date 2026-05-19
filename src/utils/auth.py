@@ -1,7 +1,8 @@
 """Auth utilities — dependency injection helpers."""
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
 from src.services.auth_service import AuthService
 
 security = HTTPBearer()
