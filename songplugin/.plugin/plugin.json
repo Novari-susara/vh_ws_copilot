@@ -1,0 +1,7 @@
+{
+  "id": "Novari-susara.songplugin",
+  "name": "songplugin",
+  "version": "1.0.0",
+  "description": "Funny song writer plugin — generates humorous songs on any topic.",
+  "agents": "agents/"
+}

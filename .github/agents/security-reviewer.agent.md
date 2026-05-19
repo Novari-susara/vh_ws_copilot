@@ -7,23 +7,20 @@ tools:
   - search
   - web
 # No write/edit tools — reviewer must NOT change code directly
-model: claude-sonnet-4-5
-user-invocable: true
-disable-model-invocation: false
+model: GPT-4.1 (copilot)
+
 handoffs:
-  - label: "🔧 Fix Issues Found"
-    agent: implementer
+  - label: "Fix Issues Found"
+    agent: Implementer
     prompt: |
       The Security Reviewer found the following issues. Please fix them now:
       [Copilot will fill in the findings from the review above]
       
       Fix each issue following the project security rules in .github/copilot-instructions.md.
       After fixing, run the tests to confirm nothing is broken.
-    send: false
-  - label: "📋 Create Security Report"
-    agent: documenter
+  - label: "Create Security Report"
+    agent: Documenter
     prompt: "Generate a formal security audit report based on the findings above. Save it to docs/security-audit-report.md"
-    send: false
 ---
 
 # Security Reviewer Agent

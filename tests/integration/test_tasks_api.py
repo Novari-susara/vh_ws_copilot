@@ -5,6 +5,7 @@ Run with: pytest tests/integration/test_tasks_api.py -v
 
 import pytest
 from fastapi.testclient import TestClient
+
 from src.main import app
 from src.services.task_service import _tasks
 
@@ -92,7 +93,10 @@ class TestTasksAPI:
 
     def test_unauthenticated_request_rejected(self, client):
         resp = client.get("/api/v1/tasks/")
-        assert resp.status_code in (401, 403)  # FastAPI HTTPBearer returns 403 for missing token
+        assert resp.status_code in (
+            401,
+            403,
+        )  # FastAPI HTTPBearer returns 403 for missing token
 
     def test_health_check(self, client):
         resp = client.get("/health")

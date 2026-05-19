@@ -3,9 +3,17 @@ Tasks API endpoints.
 CRUD operations for task management.
 """
 
-from fastapi import APIRouter, HTTPException, Depends, Query, status
 from typing import List, Optional
-from src.models.schemas import TaskCreate, TaskUpdate, TaskResponse, TaskStatus, TaskPriority
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from src.models.schemas import (
+    TaskCreate,
+    TaskPriority,
+    TaskResponse,
+    TaskStatus,
+    TaskUpdate,
+)
 from src.services.task_service import TaskService
 from src.utils.auth import get_current_user
 

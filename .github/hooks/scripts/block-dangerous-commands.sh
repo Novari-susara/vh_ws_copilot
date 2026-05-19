@@ -10,18 +10,21 @@
 
 set -euo pipefail
 
+# Portable Python: prefer python3, fall back to python (Windows Git Bash compatibility)
+PYTHON=$(python3 -c "import sys" >/dev/null 2>&1 && echo "python3" || echo "python")
+
 # Read stdin JSON input
 INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
-TOOL_INPUT=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input','')))" 2>/dev/null || echo "{}")
+TOOL_NAME=$(echo "$INPUT" | "$PYTHON" -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null || echo "")
+TOOL_INPUT=$(echo "$INPUT" | "$PYTHON" -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input','')))" 2>/dev/null || echo "{}")
 
-# Only check terminal/shell tool calls
-if [[ "$TOOL_NAME" != *"terminal"* ]] && [[ "$TOOL_NAME" != *"shell"* ]] && [[ "$TOOL_NAME" != *"bash"* ]]; then
+# Only check terminal/shell tool calls (covers run_in_terminal, execution_subagent, bash, shell variants)
+if [[ "$TOOL_NAME" != *"terminal"* ]] && [[ "$TOOL_NAME" != *"shell"* ]] && [[ "$TOOL_NAME" != *"bash"* ]] && [[ "$TOOL_NAME" != *"execution"* ]] && [[ "$TOOL_NAME" != *"run_"* ]]; then
     exit 0
 fi
 
 # Extract the command string from tool input
-COMMAND=$(echo "$TOOL_INPUT" | python3 -c "
+COMMAND=$(echo "$TOOL_INPUT" | "$PYTHON" -c "
 import sys, json
 d = json.load(sys.stdin)
 # Handle both 'command' and 'cmd' keys
@@ -30,10 +33,26 @@ print(d.get('command', d.get('cmd', d.get('input', ''))))
 
 # ─── BLOCKED PATTERNS ─────────────────────────────────────────────────────────
 
+# Protect tests/ directory from deletion (bash and PowerShell)
+if echo "$COMMAND" | grep -qE "(rm\s+(-rf|-r|-f)+\s+.*tests|Remove-Item.*tests)"; then
+    cat << 'EOF'
+{"continue": false, "stopReason": "🚫 BLOCKED: Attempted deletion of the tests/ directory. Test files are protected. Remove this protection in block-dangerous-commands.sh if intentional.", "systemMessage": "Test directory deletion blocked by PreToolUse hook."}
+EOF
+    exit 2
+fi
+
 # Destructive file operations
 if echo "$COMMAND" | grep -qE "rm\s+-rf\s+(/|\./)"; then
     cat << 'EOF'
 {"continue": false, "stopReason": "🚫 BLOCKED: Detected 'rm -rf /' or 'rm -rf ./' — this would delete critical files. Please specify the exact directory to remove.", "systemMessage": "Dangerous command blocked by PreToolUse hook."}
+EOF
+    exit 2
+fi
+
+# Block PowerShell Remove-Item -Recurse -Force on source directories
+if echo "$COMMAND" | grep -qiE "Remove-Item\s+.*-Recurse.*-Force.*(src|tests|\.)\b"; then
+    cat << 'EOF'
+{"continue": false, "stopReason": "🚫 BLOCKED: Destructive Remove-Item -Recurse -Force on a protected directory detected.", "systemMessage": "Destructive PowerShell command blocked by PreToolUse hook."}
 EOF
     exit 2
 fi

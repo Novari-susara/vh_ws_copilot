@@ -3,11 +3,12 @@ Data models for the TaskManager API.
 Uses Pydantic v2 for validation and serialization.
 """
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing import Optional, List
+import uuid
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import List, Optional
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class TaskStatus(str, Enum):

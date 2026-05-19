@@ -1,16 +1,26 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "description": "Block dangerous terminal commands before they run. Exit 2 = hard block shown to user.",
+        "command": "bash .github/hooks/scripts/block-dangerous-commands.sh",
+        "windows": "python .github/hooks/scripts/block-dangerous-commands.py",
+        "timeout": 10
+      }
+    ],
     "PostToolUse": [
       {
         "type": "command",
-        "command": "bash plugin/scripts/plugin-format.sh",
+        "command": "exit 0",
+        "windows": "exit 0",
         "description": "Plugin hook: auto-format Python files after edits (same as workspace hook but bundled in plugin)"
       }
     ],
     "SessionStart": [
       {
         "type": "command",
-        "command": "echo \"{\\\"hookSpecificOutput\\\": {\\\"hookEventName\\\": \\\"SessionStart\\\", \\\"additionalContext\\\": \\\"TaskManager Dev Tools Plugin v1.0.0 loaded. Available: @Dev Assistant agent, quick-test-runner skill, security-audit skill. Type 'run tests', 'security scan', or 'generate docs' to get started.\\\"}}\"",
+        "command": "echo \"{\\\"hookSpecificOutput\\\": {\\\"hookEventName\\\": \\\"SessionStart\\\", \\\"additionalContext\\\": \\\"TaskManager Dev Tools Plugin v1.1.0 loaded. Available: @Dev Assistant agent, quick-test-runner skill, security-audit skill, calculator MCP server. Type 'run tests', 'security scan', 'generate docs', or 'calculate <expression>' to get started.\\\"}}\"",
         "description": "Plugin hook: announce plugin capabilities at session start"
       }
     ]
