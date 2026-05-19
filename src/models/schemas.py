@@ -5,20 +5,19 @@ Uses Pydantic v2 for validation and serialization.
 
 import uuid
 from datetime import datetime
-from enum import Enum
-from typing import List, Optional
+from enum import StrEnum
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
-class TaskStatus(str, Enum):
+class TaskStatus(StrEnum):
     TODO = "todo"
     IN_PROGRESS = "in_progress"
     DONE = "done"
     CANCELLED = "cancelled"
 
 
-class TaskPriority(str, Enum):
+class TaskPriority(StrEnum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -53,31 +52,31 @@ class UserResponse(UserBase):
 
 class TaskBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
-    description: Optional[str] = Field(None, max_length=2000)
+    description: str | None = Field(None, max_length=2000)
     status: TaskStatus = TaskStatus.TODO
     priority: TaskPriority = TaskPriority.MEDIUM
-    due_date: Optional[datetime] = None
-    tags: List[str] = Field(default_factory=list)
+    due_date: datetime | None = None
+    tags: list[str] = Field(default_factory=list)
 
 
 class TaskCreate(TaskBase):
-    assignee_id: Optional[str] = None
+    assignee_id: str | None = None
 
 
 class TaskUpdate(BaseModel):
-    title: Optional[str] = Field(None, min_length=1, max_length=200)
-    description: Optional[str] = Field(None, max_length=2000)
-    status: Optional[TaskStatus] = None
-    priority: Optional[TaskPriority] = None
-    due_date: Optional[datetime] = None
-    tags: Optional[List[str]] = None
-    assignee_id: Optional[str] = None
+    title: str | None = Field(None, min_length=1, max_length=200)
+    description: str | None = Field(None, max_length=2000)
+    status: TaskStatus | None = None
+    priority: TaskPriority | None = None
+    due_date: datetime | None = None
+    tags: list[str] | None = None
+    assignee_id: str | None = None
 
 
 class TaskResponse(TaskBase):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     creator_id: str
-    assignee_id: Optional[str] = None
+    assignee_id: str | None = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
@@ -86,7 +85,7 @@ class TaskResponse(TaskBase):
 
 class TokenResponse(BaseModel):
     access_token: str
-    token_type: str = "bearer"
+    token_type: str = "bearer"  # noqa: S105
     expires_in: int = 3600
 
 

@@ -1,6 +1,7 @@
 """Authentication endpoints."""
 
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from src.models.schemas import LoginRequest, TokenResponse
 from src.services.auth_service import AuthService
 

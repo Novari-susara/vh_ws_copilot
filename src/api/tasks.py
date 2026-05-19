@@ -3,8 +3,6 @@ Tasks API endpoints.
 CRUD operations for task management.
 """
 
-from typing import List, Optional
-
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from src.models.schemas import (
@@ -24,11 +22,11 @@ def get_task_service() -> TaskService:
     return TaskService()
 
 
-@router.get("/", response_model=List[TaskResponse])
+@router.get("/", response_model=list[TaskResponse])
 async def list_tasks(
-    status: Optional[TaskStatus] = Query(None, description="Filter by status"),
-    priority: Optional[TaskPriority] = Query(None, description="Filter by priority"),
-    assignee_id: Optional[str] = Query(None, description="Filter by assignee"),
+    status: TaskStatus | None = Query(None, description="Filter by status"),
+    priority: TaskPriority | None = Query(None, description="Filter by priority"),
+    assignee_id: str | None = Query(None, description="Filter by assignee"),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     current_user: dict = Depends(get_current_user),

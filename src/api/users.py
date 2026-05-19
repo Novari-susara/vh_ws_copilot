@@ -1,7 +1,7 @@
 """Users API endpoints."""
 
-from fastapi import APIRouter, HTTPException, Depends, status
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from src.models.schemas import UserCreate, UserResponse
 from src.services.user_service import UserService
 from src.utils.auth import get_current_user
@@ -25,7 +25,7 @@ async def get_current_user_profile(
     return user
 
 
-@router.get("/", response_model=List[UserResponse])
+@router.get("/", response_model=list[UserResponse])
 async def list_users(
     current_user: dict = Depends(get_current_user),
     service: UserService = Depends(get_user_service),
