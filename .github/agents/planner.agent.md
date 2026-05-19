@@ -7,16 +7,16 @@ tools:
   - search
   - web
 # Deliberately NO write tools — plan only, don't touch code
-model: claude-sonnet-4-5
+model: Claude Sonnet 4.6 (copilot)
 user-invocable: true
 disable-model-invocation: false
 handoffs:
-  - label: "🚀 Start Implementation"
-    agent: implementer
+  - label: "Start Implementation"
+    agent: Implementer
     prompt: "Please implement the plan above, following it step by step."
     send: false
-  - label: "🔍 Security Review First"
-    agent: security-reviewer
+  - label: "Security Review First"
+    agent: Security Reviewer
     prompt: "Before we implement, please security-review the existing codebase and flag any issues the implementation plan should address."
     send: false
 ---

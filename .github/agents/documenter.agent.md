@@ -7,12 +7,12 @@ tools:
   - search
   - write
   - edit
-model: claude-sonnet-4-5
+model: Gemini 3 Flash (Preview) (copilot)
 user-invocable: true
 disable-model-invocation: false
 handoffs:
-  - label: "🔍 Review the Docs"
-    agent: security-reviewer
+  - label: "Review the Docs"
+    agent: Security Reviewer
     prompt: "Please review the documentation I just generated for accuracy and completeness."
     send: false
 ---

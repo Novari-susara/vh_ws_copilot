@@ -9,20 +9,20 @@ tools:
   - search
   - terminal
   - web
-model: claude-sonnet-4-5
+model: Claude Sonnet 4.6 (copilot)
 user-invocable: true
 disable-model-invocation: false
 handoffs:
-  - label: "🔍 Security Review"
-    agent: security-reviewer
+  - label: "Security Review"
+    agent: Security Reviewer
     prompt: "Please review the code I just implemented for security vulnerabilities."
     send: false
-  - label: "📝 Document It"
-    agent: documenter
+  - label: "Document It"
+    agent: Documenter
     prompt: "Generate API documentation for the code I just implemented."
     send: false
-  - label: "✅ Done — Back to Plan"
-    agent: planner
+  - label: "Done — Back to Plan"
+    agent: Planner
     prompt: "Implementation complete. What's the next task in the plan?"
     send: false
 ---
