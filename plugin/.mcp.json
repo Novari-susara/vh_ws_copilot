@@ -4,6 +4,11 @@
       "command": "python3",
       "args": ["${PLUGIN_ROOT}/mcp-servers/local-db/server.py"],
       "description": "TaskManager database MCP server bundled with the plugin"
+    },
+    "calculator": {
+      "type": "http",
+      "url": "http://127.0.0.1:8004/mcp",
+      "description": "Student calculator MCP server — add, subtract, multiply, divide, power, sqrt, modulo, factorial, percentage"
     }
   }
 }
