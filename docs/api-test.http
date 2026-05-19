@@ -1,0 +1,136 @@
+### TaskManager API — REST Client Test File
+### Install the "REST Client" VS Code extension to run these requests
+
+@baseUrl = http://localhost:8000
+@contentType = application/json
+
+### ─── Health Check ──────────────────────────────────────────────────────────
+
+# @name health
+GET {{baseUrl}}/health
+
+###
+
+### ─── Authentication ─────────────────────────────────────────────────────────
+
+# @name login
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "alice@example.com",
+  "password": "Demo1234!"
+}
+
+###
+@token = {{login.response.body.access_token}}
+
+### ─── Users ──────────────────────────────────────────────────────────────────
+
+# @name createUser
+POST {{baseUrl}}/api/v1/users/
+Content-Type: {{contentType}}
+
+{
+  "email": "alice@example.com",
+  "full_name": "Alice Johnson",
+  "password": "Demo1234!"
+}
+
+###
+
+# @name getMe
+GET {{baseUrl}}/api/v1/users/me
+Authorization: Bearer {{token}}
+
+###
+
+# @name listUsers
+GET {{baseUrl}}/api/v1/users/
+Authorization: Bearer {{token}}
+
+###
+
+### ─── Tasks ──────────────────────────────────────────────────────────────────
+
+# @name createTask
+POST {{baseUrl}}/api/v1/tasks/
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "title": "Implement JWT refresh endpoint",
+  "description": "Add POST /api/v1/auth/refresh that validates refresh tokens and issues new access tokens",
+  "priority": "high",
+  "tags": ["auth", "api", "security"]
+}
+
+###
+@taskId = {{createTask.response.body.id}}
+
+# @name listTasks
+GET {{baseUrl}}/api/v1/tasks/?limit=20&offset=0
+Authorization: Bearer {{token}}
+
+###
+
+# @name listTasksByPriority
+GET {{baseUrl}}/api/v1/tasks/?priority=high
+Authorization: Bearer {{token}}
+
+###
+
+# @name listTasksByStatus
+GET {{baseUrl}}/api/v1/tasks/?status=todo
+Authorization: Bearer {{token}}
+
+###
+
+# @name getTask
+GET {{baseUrl}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
+
+# @name updateTask
+PATCH {{baseUrl}}/api/v1/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+  "status": "in_progress",
+  "description": "Updated: Add POST /api/v1/auth/refresh with 7-day refresh token expiry"
+}
+
+###
+
+# @name deleteTask
+DELETE {{baseUrl}}/api/v1/tasks/{{taskId}}
+Authorization: Bearer {{token}}
+
+###
+
+### ─── Error Cases ────────────────────────────────────────────────────────────
+
+# @name unauthorizedRequest
+GET {{baseUrl}}/api/v1/tasks/
+# No Authorization header — expect 403
+
+###
+
+# @name notFoundTask
+GET {{baseUrl}}/api/v1/tasks/nonexistent-task-id
+Authorization: Bearer {{token}}
+# Expect 404
+
+###
+
+# @name invalidLogin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "alice@example.com",
+  "password": "WrongPassword!"
+}
+# Expect 401

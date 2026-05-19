@@ -1,0 +1,32 @@
+{
+  "servers": {
+    "taskmanager-local-db": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["mcp-servers/local-db/server.py"],
+      "description": "Local MCP server providing direct access to the TaskManager in-memory database for querying and reporting",
+      "env": {
+        "TASKMANAGER_ENV": "development",
+        "LOG_LEVEL": "INFO"
+      }
+    },
+
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp",
+      "description": "GitHub MCP server — access repos, issues, PRs, and code search"
+    },
+
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@microsoft/mcp-server-playwright"],
+      "description": "Playwright browser automation — for testing UI flows or scraping docs"
+    },
+
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${workspaceFolder}"],
+      "description": "Filesystem MCP server scoped to this workspace — safer file operations"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "taskmanager-plugin-db": {
+      "command": "python3",
+      "args": ["${PLUGIN_ROOT}/mcp-servers/local-db/server.py"],
+      "description": "TaskManager database MCP server bundled with the plugin"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "description": "Inject project context at session start — git branch, Python version, test status",
+        "command": "echo \"{\\\"hookSpecificOutput\\\": {\\\"hookEventName\\\": \\\"SessionStart\\\", \\\"additionalContext\\\": \\\"Project: TaskManager API | Branch: $(git branch --show-current 2>/dev/null || echo 'unknown') | Python: $(python3 --version 2>&1) | Tests: run 'pytest tests/ -v' to check status | Key files: src/main.py, src/api/, src/services/, src/models/schemas.py | Docs: docs/ | Copilot rules: .github/copilot-instructions.md\\\"}}\"",
+        "osx": "echo \"{\\\"hookSpecificOutput\\\": {\\\"hookEventName\\\": \\\"SessionStart\\\", \\\"additionalContext\\\": \\\"Project: TaskManager API | Branch: $(git branch --show-current 2>/dev/null || echo 'unknown') | Python: $(python3 --version 2>&1) | Key files: src/main.py, src/api/, src/services/\\\"}}\"",
+        "windows": "echo {\"hookSpecificOutput\": {\"hookEventName\": \"SessionStart\", \"additionalContext\": \"Project: TaskManager API | Windows environment | Check .github/copilot-instructions.md for rules\"}}"
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "type": "command",
+        "description": "Block dangerous terminal commands before they run. Exit 2 = hard block shown to user.",
+        "command": "bash .github/hooks/scripts/block-dangerous-commands.sh",
+        "timeout": 10
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "type": "command",
+        "description": "Auto-format Python files after every edit using ruff. Also run quick lint check.",
+        "command": "bash .github/hooks/scripts/auto-format.sh",
+        "timeout": 30
+      },
+      {
+        "type": "command",
+        "description": "Log all tool use for audit trail",
+        "command": "bash .github/hooks/scripts/audit-log.sh",
+        "timeout": 5
+      }
+    ],
+
+    "Stop": [
+      {
+        "type": "command",
+        "description": "Before agent stops, verify tests still pass. Block if tests are failing.",
+        "command": "bash .github/hooks/scripts/require-tests-pass.sh",
+        "timeout": 60
+      }
+    ]
+  }
+}

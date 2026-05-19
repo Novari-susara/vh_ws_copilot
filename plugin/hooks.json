@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "bash plugin/scripts/plugin-format.sh",
+        "description": "Plugin hook: auto-format Python files after edits (same as workspace hook but bundled in plugin)"
+      }
+    ],
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "echo \"{\\\"hookSpecificOutput\\\": {\\\"hookEventName\\\": \\\"SessionStart\\\", \\\"additionalContext\\\": \\\"TaskManager Dev Tools Plugin v1.0.0 loaded. Available: @Dev Assistant agent, quick-test-runner skill, security-audit skill. Type 'run tests', 'security scan', or 'generate docs' to get started.\\\"}}\"",
+        "description": "Plugin hook: announce plugin capabilities at session start"
+      }
+    ]
+  }
+}
