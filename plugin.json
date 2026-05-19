@@ -1,0 +1,14 @@
+{
+  "name": "taskmanager-dev-tools",
+  "description": "Complete development toolkit for the TaskManager API — security review agent, API doc generator skill, code review skill, lifecycle hooks, local database MCP server, and HTTP calculator MCP server. One install, everything you need.",
+  "version": "1.1.0",
+  "author": {
+    "name": "TaskManager Team",
+    "email": "dev@taskmanager.example.com",
+    "url": "https://github.com/Novari-susara/vh_ws_copilot"
+  },
+  "skills": "plugin/skills/",
+  "agents": "plugin/agents/",
+  "hooks": "plugin/hooks.json",
+  "mcpServers": "plugin/.mcp.json"
+}
