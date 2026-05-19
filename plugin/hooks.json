@@ -1,5 +1,14 @@
 {
   "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "description": "Block dangerous terminal commands before they run. Exit 2 = hard block shown to user.",
+        "command": "bash .github/hooks/scripts/block-dangerous-commands.sh",
+        "windows": "python .github/hooks/scripts/block-dangerous-commands.py",
+        "timeout": 10
+      }
+    ],
     "PostToolUse": [
       {
         "type": "command",

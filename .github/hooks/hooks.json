@@ -14,8 +14,8 @@
       {
         "type": "command",
         "description": "Block dangerous terminal commands before they run. Exit 2 = hard block shown to user.",
-        "command": "exit 0",
-        "windows": "exit 0",
+        "command": "bash .github/hooks/scripts/block-dangerous-commands.sh",
+        "windows": "python .github/hooks/scripts/block-dangerous-commands.py",
         "timeout": 10
       }
     ],
